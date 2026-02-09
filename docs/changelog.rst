@@ -1,0 +1,17 @@
+Changelog
+=========
+
+v0.1.0
+------
+
+*Initial release.*
+
+- Decorator-based DSL with ``@rule``, ``@task``, and ``@mtime``
+- Regex target patterns with backreferences in dependencies
+- Async parallel execution with configurable worker count
+- mtime-based rebuild detection
+- Custom mtime functions for non-file resources
+- Order-only prerequisites (``needs``)
+- CLI driver (``Main``) with help, target listing, and verbosity control
+- Utility functions: ``shell()``, ``command()``, ``message()``
+- ``schedule()`` for dynamically adding targets during builds

@@ -1,0 +1,53 @@
+[project]
+name = "chorelib"
+version = "0.1.0"
+description = "Python build automation framework with decorator-based DSL"
+readme = "README.md"
+authors = [
+    { name = "Atsuo Ishimoto", email = "atsuoishimoto@gmail.com" }
+]
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["build", "automation", "make", "async", "task-runner"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Framework :: AsyncIO",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/atsuoishimoto/chorelib"
+Repository = "https://github.com/atsuoishimoto/chorelib"
+Documentation = "https://chorelib.readthedocs.io/en/latest/"
+Issues = "https://github.com/atsuoishimoto/chorelib/issues"
+
+[build-system]
+requires = ["uv_build>=0.8.15,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.0",
+    "sphinx>=8.1.3",
+    "sphinx-rtd-theme>=3.1.0",
+]
+
+[tool.ruff]
+lint.select = [
+  "E4",
+  "E7",
+  "E9",
+  "F",
+  "I"
+]
+line-length = 99
