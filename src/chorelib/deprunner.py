@@ -172,7 +172,7 @@ class Runner:
 
         return timestamp_or_none
 
-    def _ensure_target(self, target: str, build_always: bool) -> None:
+    def _ensure_target(self, target: str, build_always: bool) -> asyncio.Task[Any]:
         """Ensure that the target is built and return its timestamp."""
         task = self.build_tasks.get(target)
         if not task:
@@ -205,7 +205,7 @@ class Runner:
                     break
                 await asyncio.gather(*tasks)
         except Exception:
-            self.runnning = False
+            self.running = False
             tasks = [task for task in self.build_tasks.values()]
             for task in tasks:
                 task.cancel()

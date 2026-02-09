@@ -64,7 +64,7 @@ def to_timestamp(ts: Any) -> Any:
     match ts:
         case datetime.datetime():
             if not ts.tzinfo:
-                return ts.replace(tzinfo=datetime.timezone.utc)
+                return ts.replace(tzinfo=datetime.timezone.utc).timestamp()
             return ts.timestamp()
         case _:
             return ts
@@ -111,7 +111,7 @@ def shell(
         message(cmdstr, 0)
 
     ret = subprocess.run(
-        cmdstr, cwd=cwd, shell=True, stdout=stdout, text=text, check=check, env=None
+        cmdstr, cwd=cwd, shell=True, stdout=stdout, text=text, check=check, env=env
     )
     if stdout:
         return ret.stdout  # type: ignore[no-any-return]
