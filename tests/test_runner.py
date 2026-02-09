@@ -11,25 +11,29 @@ from chorelib import errors, ruledef, utils
 from chorelib.deprunner import run
 
 
-def test_build(tmp_path):
+def builder(target: str, depends: list[str], needs: list[str]) -> None:
+    pass
+
+
+def test_build(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt", depends="b.txt", needs="c.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         assert target == "a.txt"
         assert depends == ["b.txt"]
         assert needs == ["c.txt"]
         (tmp_path / "a.txt").write_text("a.txt")
 
     @rules.rule("b.txt")
-    def make_b(target, depends, needs):
+    def make_b(target: str, depends: list[str], needs: list[str]) -> None:
         assert target == "b.txt"
         assert depends == []
         assert needs == []
         (tmp_path / "b.txt").write_text("b.txt")
 
     @rules.rule("c.txt")
-    def make_c(target, depends, needs):
+    def make_c(target: str, depends: list[str], needs: list[str]) -> None:
         assert target == "c.txt"
         assert depends == []
         assert needs == []
@@ -74,11 +78,11 @@ def test_build(tmp_path):
         assert ts3["c.txt"] != ts4["c.txt"]
 
 
-def test_no_deps(tmp_path):
+def test_no_deps(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         Path("a.txt").write_text("update")
 
     with utils.chdir(tmp_path):
@@ -88,11 +92,11 @@ def test_no_deps(tmp_path):
         assert a_txt.read_text() == "a.txt"
 
 
-def test_mtime_file(tmp_path):
+def test_mtime_file(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt", depends="b.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         Path("a.txt").write_text("updated")
 
     with utils.chdir(tmp_path):
@@ -109,11 +113,11 @@ def test_mtime_file(tmp_path):
         assert (tmp_path / "a.txt").read_text() == "updated"
 
 
-def test_mtime_func(tmp_path):
+def test_mtime_func(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt", depends="b.txt", needs="c.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         print("><", target, depends, needs)
         assert target == "a.txt"
         assert depends == ["b.txt"]
@@ -121,15 +125,15 @@ def test_mtime_func(tmp_path):
         Path("a.txt").write_text("updated")
 
     @rules.rule(re.compile(r"(.*)\.txt"))
-    def make_txt(target, depends, needs):
+    def make_txt(target: str, depends: list[str], needs: list[str]) -> None:
         assert 0  # should not be called
 
     @rules.mtime("a.txt")
-    def mtime_a(filename):
+    def mtime_a(filename: str) -> int:
         return 1000
 
     @rules.mtime(re.compile(r"(.*)\.txt"))
-    def mtime_b(filename):
+    def mtime_b(filename: str) -> int:
         return 2000
 
     with utils.chdir(tmp_path):
@@ -141,11 +145,11 @@ def test_mtime_func(tmp_path):
         assert (tmp_path / "a.txt").read_text() == "updated"
 
 
-def test_no_builder(tmp_path):
+def test_no_builder(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt", depends="b.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         pass
 
     with utils.chdir(tmp_path):
@@ -154,17 +158,17 @@ def test_no_builder(tmp_path):
         assert excinfo.value.args[0] == "b.txt"
 
 
-def test_thread(tmp_path):
+def test_thread(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
 
     @rules.rule("a.txt")
-    def make_a(target, depends, needs):
+    def make_a(target: str, depends: list[str], needs: list[str]) -> None:
         print("make a")
         ev.wait()
         Path(target).write_text("a.txt")
 
     @rules.rule("b.txt")
-    def make_b(target, depends, needs):
+    def make_b(target: str, depends: list[str], needs: list[str]) -> None:
         print("make b")
         ev.set()
         Path(target).write_text("b.txt")
@@ -174,16 +178,16 @@ def test_thread(tmp_path):
         asyncio.run(run(rules, ["a.txt", "b.txt"], num_workers=2))
 
 
-def test_add_build_targets(tmp_path):
+def test_add_build_targets(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
     from chorelib.deprunner import schedule
 
     @rules.task
-    def task1():
+    def task1() -> None:
         schedule(["task2"])
 
     @rules.task
-    def task2():
+    def task2() -> None:
         open("task2.txt", "w").write("task2")
 
     with utils.chdir(tmp_path):
@@ -191,16 +195,16 @@ def test_add_build_targets(tmp_path):
         assert (tmp_path / "task2.txt").read_text() == "task2"
 
 
-def test_add_build_targets_thread(tmp_path):
+def test_add_build_targets_thread(tmp_path: Path) -> None:
     rules = ruledef.RuleSet()
     from chorelib.deprunner import schedule
 
     @rules.task
-    def task1():
+    def task1() -> None:
         schedule(["task2"])
 
     @rules.task
-    def task2():
+    def task2() -> None:
         open("task2.txt", "w").write("task2")
 
     with utils.chdir(tmp_path):
