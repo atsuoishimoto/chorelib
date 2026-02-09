@@ -27,6 +27,7 @@ Features
 - **mtime-based rebuild** — Skip up-to-date targets automatically, just like Make
 - **Custom mtime functions** — Override mtime checking for non-file resources (databases, S3, etc.)
 - **Order-only prerequisites** — ``needs`` dependencies ensure build order without triggering rebuilds
+- **Custom command-line options** — Subclass ``Main`` to add your own ``argparse`` options for build configuration
 - **Zero dependencies** — Pure Python, no external packages required
 
 .. toctree::

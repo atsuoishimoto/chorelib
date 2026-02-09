@@ -14,6 +14,7 @@ chorelib uses a decorator-based DSL for defining build rules and tasks, with dep
 - **Custom mtime functions** — Override mtime checking per target pattern to manage non-file resources (databases, S3 objects, etc.)
 - **Order-only prerequisites** — `needs` dependencies ensure build order without triggering rebuilds
 - **Auto-generated help** — `-h` shows usage with target documentation from docstrings, `-l` lists all available targets
+- **Custom command-line options** — Subclass `Main` to add your own `argparse` options for build configuration
 - **Zero dependencies** — Pure Python, no external packages required
 
 **Best for:** developers who want Make-like rebuild behavior but need Python for complex logic or non-file resources.
