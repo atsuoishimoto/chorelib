@@ -37,7 +37,7 @@ class Main:
         self.args: argparse.Namespace
         self._load_args()
 
-    def _load_args(self):
+    def _load_args(self) -> None:
         self.parser = self._build_parser()
         self.args = self.parse_args(self.parser)
 
@@ -127,7 +127,7 @@ class Main:
         version = getattr(chorelib, "__version__", "unknown")
         return f"{progname} (chorelib version {version})"
 
-    def _list_targets(self):
+    def _list_targets(self) -> None:
         for rule in self.rules.rules:
             print(rule.get_descr())
 

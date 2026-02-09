@@ -147,8 +147,12 @@ class RuleBase:
         """Get the documentation for the rule."""
         return None, None
 
+    def get_descr(self) -> str:
+        """Get a description string for the rule."""
+        return ""
 
-def _get_builder_name(builder):
+
+def _get_builder_name(builder: BuilderFunc | None) -> str:
     if not builder:
         return ""
 
@@ -160,7 +164,7 @@ def _get_builder_name(builder):
     return name
 
 
-def _get_dep_name(dep):
+def _get_dep_name(dep: str | Callable[..., Any] | Pattern[str]) -> str:
     match dep:
         case Callable():
             return _get_builder_name(dep)
@@ -170,7 +174,7 @@ def _get_dep_name(dep):
             return str(dep)
 
 
-def _compile_regex_literal(s):
+def _compile_regex_literal(s: str) -> str | Pattern[str]:
     if len(s) >= 2 and s.startswith("^"):
         return re.compile(s)
     else:
@@ -251,7 +255,7 @@ class Rule(RuleBase):
         name = self._get_target_name()
         return name, doc
 
-    def get_descr(self):
+    def get_descr(self) -> str:
         targets = ", ".join(_get_dep_name(t) for t in self.targets)
         depends = ", ".join(_get_dep_name(d) for d in self.depends)
         needs = ", ".join(_get_dep_name(n) for n in self.needs)
@@ -325,7 +329,7 @@ class Task(RuleBase):
             self.builder()
         return -1
 
-    def get_descr(self):
+    def get_descr(self) -> str:
         needs = ", ".join(str(n) for n in self.needs)
         builder = _get_builder_name(self.builder)
         return f"""[task] {self.name}:

@@ -177,13 +177,13 @@ def message(msg: str, level: int = 0) -> None:
 class chdir:
     """Non thread-safe context manager to change the current working directory."""
 
-    def __init__(self, path):
+    def __init__(self, path: str | os.PathLike[str]) -> None:
         self.path = path
-        self._old_cwd = []
+        self._old_cwd: list[str] = []
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         self._old_cwd.append(os.getcwd())
         os.chdir(self.path)
 
-    def __exit__(self, *excinfo):
+    def __exit__(self, *excinfo: object) -> None:
         os.chdir(self._old_cwd.pop())
