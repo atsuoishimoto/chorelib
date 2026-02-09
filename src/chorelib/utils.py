@@ -56,7 +56,7 @@ def to_timestamp(ts: Any) -> Any:
 
     Args:
         ts: A datetime object or numeric timestamp. If a naive datetime
-            (without tzinfo) is given, it is treated as UTC.
+            (without tzinfo) is given, it is treated as local time zone.
 
     Returns:
         A float timestamp, or the original value if not a datetime.
@@ -64,7 +64,7 @@ def to_timestamp(ts: Any) -> Any:
     match ts:
         case datetime.datetime():
             if not ts.tzinfo:
-                return ts.replace(tzinfo=datetime.timezone.utc).timestamp()
+                return ts.astimezone().timestamp()
             return ts.timestamp()
         case _:
             return ts
