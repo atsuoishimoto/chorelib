@@ -6,9 +6,9 @@ Demonstrates how chorelib can manage non-file resources by providing a custom
 stores and retrieves timestamps from a SQLite database.
 
 Usage:
-    uv run python sqlitesample.py             # List registered countries
-    uv run python sqlitesample.py japan        # Fetch and register a country
-    uv run python sqlitesample.py clean        # Delete the database file
+    uv run sqlitesample.py             # List registered countries
+    uv run sqlitesample.py japan        # Fetch and register a country
+    uv run sqlitesample.py clean        # Delete the database file
 """
 
 import os

@@ -25,13 +25,13 @@ Run from this directory:
 
 ```bash
 # Build DOC.txt from source files
-uv run python gen-doc.py
+uv run gen-doc.py
 
 # Clean the generated file
-uv run python gen-doc.py clean
+uv run gen-doc.py clean
 
 # Verbose output
-uv run python gen-doc.py -v
+uv run gen-doc.py -v
 ```
 
 After running the build, `DOC.txt` will contain the concatenated contents of all input files:

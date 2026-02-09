@@ -19,10 +19,10 @@ Demonstrates:
   - Parallel builds: independent region banners can be built concurrently with -w
 
 Usage:
-    uv run python make.py            # Build world.jpeg (default target)
-    uv run python make.py -w 4       # Build with 4 parallel workers
-    uv run python make.py asia.jpeg  # Build only the Asia banner
-    uv run python make.py clean      # Remove generated files
+    uv run make.py            # Build world.jpeg (default target)
+    uv run make.py -w 4       # Build with 4 parallel workers
+    uv run make.py asia.jpeg  # Build only the Asia banner
+    uv run make.py clean      # Remove generated files
 """
 
 from pathlib import Path

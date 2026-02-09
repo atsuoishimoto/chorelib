@@ -83,18 +83,18 @@ if __name__ == "__main__":
 ```
 
 ```bash
-uv run python make.py              # Build default target
-uv run python make.py clean        # Run the clean task
-uv run python make.py -w 4         # Build with 4 parallel workers
-uv run python make.py -r           # Force rebuild all
-uv run python make.py -h           # Show help with target docs
-uv run python make.py -l           # List all available targets
+uv run make.py              # Build default target
+uv run make.py clean        # Run the clean task
+uv run make.py -w 4         # Build with 4 parallel workers
+uv run make.py -r           # Force rebuild all
+uv run make.py -h           # Show help with target docs
+uv run make.py -l           # List all available targets
 ```
 
 `-h` displays usage information along with target documentation extracted from docstrings:
 
 ```
-$ uv run python make.py -h
+$ uv run make.py -h
 usage: make.py [-h] [-C DIRECTORY] [-w WORKERS] [-r] [-l] [-v] [-V] [targets ...]
 
 Sample build script for building a C program using chorelib.
@@ -116,7 +116,7 @@ execute:
 `-l` lists all registered targets with their types, dependencies, and builder functions:
 
 ```
-$ uv run python make.py -l
+$ uv run make.py -l
 [rule] hello.exe:
   depends: hello.o, main.o
   needs:

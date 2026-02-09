@@ -27,13 +27,13 @@ uv sync
 playwright install chromium
 
 # Build doc.pdf (default target)
-uv run python md2pdf.py
+uv run md2pdf.py
 
 # Clean generated files
-uv run python md2pdf.py clean
+uv run md2pdf.py clean
 
 # Verbose output
-uv run python md2pdf.py -v doc.pdf
+uv run md2pdf.py -v doc.pdf
 ```
 
 ## Files

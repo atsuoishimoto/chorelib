@@ -23,32 +23,32 @@ Run from this directory:
 
 ```bash
 # Build the executable (default target)
-uv run python make.py
+uv run make.py
 
 # Clean built files
-uv run python make.py clean
+uv run make.py clean
 
 # Clean and rebuild
-uv run python make.py rebuild
+uv run make.py rebuild
 
 # Rebuild and run the program
-uv run python make.py execute
+uv run make.py execute
 ```
 
 ### Useful options
 
 ```bash
 # Show available targets and their descriptions
-uv run python make.py -h
+uv run make.py -h
 
 # Verbose output (show executed commands)
-uv run python make.py -v
+uv run make.py -v
 
 # Force rebuild all targets regardless of mtime
-uv run python make.py -r
+uv run make.py -r
 
 # Run up to 4 tasks in parallel
-uv run python make.py -w 4
+uv run make.py -w 4
 ```
 
 ## File structure

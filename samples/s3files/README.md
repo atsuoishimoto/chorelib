@@ -21,13 +21,13 @@ S3TEST.txt (local)  -->  s3://bucket/S3TEST.txt (S3)
 
 ```bash
 # Upload a file to S3
-uv run python s3files.py s3://YOUR_BUCKET/S3TEST.txt
+uv run s3files.py s3://YOUR_BUCKET/S3TEST.txt
 
 # The file is skipped if the S3 object is already up to date
-uv run python s3files.py s3://YOUR_BUCKET/S3TEST.txt
+uv run s3files.py s3://YOUR_BUCKET/S3TEST.txt
 
 # Verbose output
-uv run python s3files.py -v s3://YOUR_BUCKET/S3TEST.txt
+uv run s3files.py -v s3://YOUR_BUCKET/S3TEST.txt
 ```
 
 ## Files

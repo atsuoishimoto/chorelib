@@ -8,7 +8,7 @@
 Sample build script for building a C program using chorelib.
 
 This is the chorelib equivalent of the accompanying Makefile.
-Run with: uv run python make.py
+Run with: uv run make.py
 """
 
 import re

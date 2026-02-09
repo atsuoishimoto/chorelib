@@ -26,19 +26,19 @@ Run from this directory:
 
 ```bash
 # List all registered countries (default target)
-uv run python sqlitesample.py
+uv run sqlitesample.py
 
 # Register a country (fetches data from API and stores in DB)
-uv run python sqlitesample.py japan
+uv run sqlitesample.py japan
 
 # Register multiple countries
-uv run python sqlitesample.py japan france brazil
+uv run sqlitesample.py japan france brazil
 
 # Use a different database file
-uv run python sqlitesample.py --dbfile mydata.db japan
+uv run sqlitesample.py --dbfile mydata.db japan
 
 # Delete the database file
-uv run python sqlitesample.py clean
+uv run sqlitesample.py clean
 ```
 
 Running a country target a second time does nothing, because the custom `@mtime` function detects it is already registered.

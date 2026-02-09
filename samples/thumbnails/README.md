@@ -23,11 +23,11 @@ This sample demonstrates the following chorelib features:
 ## Usage
 
 ```bash
-uv run python make.py              # Build world.jpeg (default target)
-uv run python make.py -w 5         # Build region banners in parallel
-uv run python make.py asia.jpeg    # Build only the Asia banner
-uv run python make.py clean        # Remove generated JPEG files
-uv run python make.py -h           # Show help
+uv run make.py              # Build world.jpeg (default target)
+uv run make.py -w 5         # Build region banners in parallel
+uv run make.py asia.jpeg    # Build only the Asia banner
+uv run make.py clean        # Remove generated JPEG files
+uv run make.py -h           # Show help
 ```
 
 ## Requirements

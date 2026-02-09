@@ -11,7 +11,7 @@ Demonstrates a simple file-based build rule with multiple source files
 and common include files as dependencies. Rebuilds only when any of
 the source or include files are newer than the output.
 
-Run with: uv run python gen-doc.py
+Run with: uv run gen-doc.py
 """
 
 from chorelib import Main, rule, shell, task
