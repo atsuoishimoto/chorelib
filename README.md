@@ -19,6 +19,10 @@ chorelib uses a decorator-based DSL for defining build rules and tasks, with dep
 **Best for:** developers who want Make-like rebuild behavior but need Python for complex logic or non-file resources.
 It also works well as a simple task runner for everyday scripts.
 
+## Documentation
+
+Full documentation is available at https://chorelib.readthedocs.io/en/latest/
+
 ## Installation
 
 ```bash
