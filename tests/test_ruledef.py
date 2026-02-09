@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from chorelib import depgraph, ruledef
+from chorelib import depgraph, ruledef, errors
 
 
 def test_ruledef():
@@ -152,9 +152,9 @@ def test_ruleset_select_default_error():
     rules = ruledef.RuleSet()
 
     rules.rule(targets="abc", default=True)
-    with pytest.raises(ruledef.RuleError):
+    with pytest.raises(errors.RuleError):
         rules.rule(targets=re.compile("def"), default=True)
-    with pytest.raises(ruledef.RuleError):
+    with pytest.raises(errors.RuleError):
         rules.rule(targets=["a", "b"], default=True)
 
 
@@ -217,7 +217,7 @@ def test_depgraph_detectloop_simple():
     g = depgraph.DepGraph()
     g.addtarget(rules, "a")
 
-    with pytest.raises(ruledef.RuleError):
+    with pytest.raises(errors.RuleError):
         g.detectloop()
 
 
@@ -240,12 +240,12 @@ def test_depgraph_detectloop():
     rules.rule(targets="a5", depends=["a2"])(f)
     g.addtarget(rules, "a5")
 
-    with pytest.raises(ruledef.RuleError):
+    with pytest.raises(errors.RuleError):
         g.detectloop()
 
 
 def test_mtime():
-    def f(target, depends, needs):
+    def f(target):
         pass
 
     rules = ruledef.RuleSet()
@@ -254,7 +254,7 @@ def test_mtime():
 
 
 def test_mtime_targets():
-    def f(target, depends, needs):
+    def f(target):
         pass
 
     rules = ruledef.RuleSet()
@@ -264,7 +264,7 @@ def test_mtime_targets():
 
 
 def test_mtime_regex():
-    def f(target, depends, needs):
+    def f(target):
         pass
 
     rules = ruledef.RuleSet()
@@ -274,7 +274,7 @@ def test_mtime_regex():
 
 
 def test_mtime_default():
-    def f(target, depends, needs):
+    def f(target):
         pass
 
     rules = ruledef.RuleSet()
