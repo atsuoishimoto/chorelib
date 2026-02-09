@@ -1,15 +1,16 @@
 import re
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-from chorelib import depgraph, ruledef, errors
+from chorelib import depgraph, errors, ruledef
 
 
-def test_ruledef():
-    def f(targets, depends, needs):
-        pass
+def f(target: str, depends: list[str], needs: list[str]) -> None:
+    pass
 
+def test_ruledef() -> None:
     rule = ruledef.Rule(
         builder=None,
         targets="abc",
@@ -25,10 +26,7 @@ def test_ruledef():
     assert rule.doc == "doc"
 
 
-def test_taskdef():
-    def f(target, depends, needs):
-        pass
-
+def test_taskdef() -> None:
     task = ruledef.Task(
         name="name",
         needs=["123", ["456"]],
@@ -45,100 +43,96 @@ def test_taskdef():
     assert task.doc == "doc"
 
 
-def test_ruleset_select_rule():
-    def f(targets, depends, needs):
-        pass
-
+def test_ruleset_select_rule() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="abc", depends=["def"], needs=["123"])
     rules.rule(targets="abc", depends=["ghi"], needs="xyz")(f)
     rules.rule(targets="xxx", needs=["456"])
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert set(deps) == {"ghi"}
     assert set(needs) == {"xyz"}
 
 
-def test_ruleset_select_path():
-    def f(targets, depends, needs):
-        pass
-
+def test_ruleset_select_path() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets=Path("abc"), depends=[Path("def")], needs=[Path("123")])(f)
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert set(deps) == {"def"}
     assert set(needs) == {"123"}
 
 
-def test_ruleset_select_callable():
-    def f(targets, depends, needs):
-        pass
-
+def test_ruleset_select_callable() -> None:
     rules = ruledef.RuleSet()
 
-    def dep(rule, match):
+    def dep(rule: Any, match: re.Match[str]) -> tuple[str, list[str], Path]:
         return (match[0] + "-dep", ["dep2"], Path("dep3"))
 
     rules.rule(targets=Path("abc"), depends=[dep], needs=[dep])(f)
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert set(deps) == {"abc-dep", "dep2", "dep3"}
     assert set(needs) == {"abc-dep", "dep2", "dep3"}
 
 
-def test_ruleset_select_multi_target():
-    def f(targets, depends, needs):
-        pass
-
+def test_ruleset_select_multi_target() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets=[Path("abc"), "def"])(f)
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert rule.builder is f
 
-    rule, deps, needs = rules.select_rule("def")
+    result = rules.select_rule("def")
+    assert result is not None
+    rule, deps, needs = result
     assert rule.builder is f
 
 
-def test_ruleset_select_task_over_rules():
+def test_ruleset_select_task_over_rules() -> None:
     rules = ruledef.RuleSet()
-
-    def f(targets, depends, needs):
-        pass
 
     rules.rule(targets="abc")(f)
 
-    def abc(targets, depends, needs):
+    def abc(target: str, depends: list[str], needs: list[str]) -> None:
         pass
 
     rules.task(abc)
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert rule.builder is abc
 
 
-def test_ruleset_select_regex_literal():
+def test_ruleset_select_regex_literal() -> None:
     rules = ruledef.RuleSet()
-
-    def f(targets, depends, needs):
-        pass
 
     rules.rule(targets="^ab.")(f)
 
-    def abc(targets, depends, needs):
+    def abc(target: str, depends: list[str], needs: list[str]) -> None:
         pass
 
     rules.task(abc)
 
-    rule, deps, needs = rules.select_rule("abc")
+    result = rules.select_rule("abc")
+    assert result is not None
+    rule, deps, needs = result
     assert rule.builder is abc
 
 
-def test_ruleset_select_default_target():
+def test_ruleset_select_default_target() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="abc")
@@ -148,7 +142,7 @@ def test_ruleset_select_default_target():
     assert default == "ghi"
 
 
-def test_ruleset_select_default_error():
+def test_ruleset_select_default_error() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="abc", default=True)
@@ -158,13 +152,10 @@ def test_ruleset_select_default_error():
         rules.rule(targets=["a", "b"], default=True)
 
 
-def test_ruleset_select_default_task():
+def test_ruleset_select_default_task() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets=re.compile("abc"))
-
-    def f(targets, depends, needs):
-        pass
 
     rules.task(f)
 
@@ -172,7 +163,7 @@ def test_ruleset_select_default_task():
     assert default == "f"
 
 
-def test_ruleset_select_first_default_target():
+def test_ruleset_select_first_default_target() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets=re.compile("abc"))
@@ -182,10 +173,7 @@ def test_ruleset_select_first_default_target():
     assert default == "def"
 
 
-def test_depgraph():
-    def f(target, depends, needs):
-        pass
-
+def test_depgraph() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="a", depends=["a1", "a2"])(f)
@@ -204,10 +192,7 @@ def test_depgraph():
     g.detectloop()
 
 
-def test_depgraph_detectloop_simple():
-    def f(target, depends, needs):
-        pass
-
+def test_depgraph_detectloop_simple() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="a", depends=["a1", "a2"])(f)
@@ -221,10 +206,7 @@ def test_depgraph_detectloop_simple():
         g.detectloop()
 
 
-def test_depgraph_detectloop():
-    def f(target, depends, needs):
-        pass
-
+def test_depgraph_detectloop() -> None:
     rules = ruledef.RuleSet()
 
     rules.rule(targets="a", depends=["a1", "a2"], needs=["n1", "n2"])(f)
@@ -243,39 +225,29 @@ def test_depgraph_detectloop():
     with pytest.raises(errors.RuleError):
         g.detectloop()
 
+def mtime(target: str) -> None:
+    pass
 
-def test_mtime():
-    def f(target):
-        pass
-
+def test_mtime() -> None:
     rules = ruledef.RuleSet()
-    rules.mtime(targets="a")(f)
-    assert f is rules.get_mtime_func(target="a")
+    rules.mtime(targets="a")(mtime)
+    assert mtime is rules.get_mtime_func(target="a")
 
 
-def test_mtime_targets():
-    def f(target):
-        pass
-
+def test_mtime_targets() -> None:
     rules = ruledef.RuleSet()
-    rules.mtime(targets=["a", "b"])(f)
-    assert f is rules.get_mtime_func(target="a")
-    assert f is rules.get_mtime_func(target="b")
+    rules.mtime(targets=["a", "b"])(mtime)
+    assert mtime is rules.get_mtime_func(target="a")
+    assert mtime is rules.get_mtime_func(target="b")
 
 
-def test_mtime_regex():
-    def f(target):
-        pass
-
+def test_mtime_regex() -> None:
     rules = ruledef.RuleSet()
-    rules.mtime(targets="^.$")(f)
-    assert f is rules.get_mtime_func(target="a")
+    rules.mtime(targets="^.$")(mtime)
+    assert mtime is rules.get_mtime_func(target="a")
     assert rules.default_get_file_mtime is rules.get_mtime_func(target="ab")
 
 
-def test_mtime_default():
-    def f(target):
-        pass
-
+def test_mtime_default() -> None:
     rules = ruledef.RuleSet()
     assert rules.get_mtime_func(target="a") is rules.default_get_file_mtime
