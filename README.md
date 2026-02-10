@@ -59,6 +59,7 @@ clean:
 import re
 from chorelib import Main, command, rule, task
 
+main = Main()
 APP = "hello.exe"
 CC = "gcc"
 CFLAGS = ["-c", "-I."]
@@ -80,7 +81,7 @@ def clean():
     command("rm", "-f", OBJS, APP)
 
 if __name__ == "__main__":
-    Main().run()
+    main.run()
 ```
 
 ```bash

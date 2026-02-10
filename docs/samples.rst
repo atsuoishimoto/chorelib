@@ -18,6 +18,7 @@ the ``command()`` function.
    import re
    from chorelib import Main, command, rule, task
 
+   main = Main()
    APP = "hello.exe"
    CC = "gcc"
    CFLAGS = ["-c", "-I."]
@@ -39,7 +40,7 @@ the ``command()`` function.
        command("rm", "-f", OBJS, APP)
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 **Features demonstrated:**
 
@@ -60,6 +61,7 @@ output file using ``shell()``.
 
    from chorelib import Main, rule, shell, task
 
+   main = Main()
    SRCFILES = ["a.txt", "b.txt", "c.txt"]
    COMMON = ["inc1.txt", "inc2.txt"]
 
@@ -74,7 +76,7 @@ output file using ``shell()``.
        shell("rm -f DOC.txt")
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 **Features demonstrated:**
 

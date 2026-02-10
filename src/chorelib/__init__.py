@@ -7,12 +7,14 @@ Typical usage::
 
     import chorelib
 
+    main = chorelib.Main()
+
     @chorelib.rule("output.txt", depends="input.txt")
     def build_output(target, depends, needs):
         chorelib.shell(f"cp {depends[0]} {target}")
 
     if __name__ == "__main__":
-        chorelib.Main().run()
+        main.run()
 """
 
 from .depmain import Main

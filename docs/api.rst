@@ -12,6 +12,8 @@ decorators. For most use cases, you can use these directly without creating a
 
    import chorelib
 
+   main = chorelib.Main()
+
    @chorelib.rule("output.txt", depends="input.txt")
    def build(target, depends, needs):
        chorelib.shell("cp", depends[0], target)
@@ -21,7 +23,7 @@ decorators. For most use cases, you can use these directly without creating a
        chorelib.shell("rm -f output.txt")
 
    if __name__ == "__main__":
-       chorelib.Main().run()
+       main.run()
 
 Decorators
 ^^^^^^^^^^

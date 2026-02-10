@@ -27,6 +27,7 @@ Create a file called ``make.py``:
 
    from chorelib import Main, rule, shell, task
 
+   main = Main()
    SOURCES = ["a.txt", "b.txt", "c.txt"]
 
    @rule("output.txt", depends=SOURCES, default=True)
@@ -40,7 +41,7 @@ Create a file called ``make.py``:
        shell("rm -f output.txt")
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 Run it:
 
@@ -84,6 +85,7 @@ Here is a Makefile and its chorelib equivalent side by side.
    import re
    from chorelib import Main, command, rule, task
 
+   main = Main()
    APP = "hello.exe"
    CC = "gcc"
    CFLAGS = ["-c", "-I."]
@@ -105,7 +107,7 @@ Here is a Makefile and its chorelib equivalent side by side.
        command("rm", "-f", OBJS, APP)
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 Why chorelib over Make?
 -----------------------

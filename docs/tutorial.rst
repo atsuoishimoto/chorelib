@@ -15,6 +15,7 @@ how to produce a target file from its dependencies.
    # gen-doc.py
    from chorelib import Main, rule, shell, task
 
+   main = Main()
    SRCFILES = ["a.txt", "b.txt", "c.txt"]
    COMMON = ["inc1.txt", "inc2.txt"]
 
@@ -29,7 +30,7 @@ how to produce a target file from its dependencies.
        shell("rm -f DOC.txt")
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 Key points:
 
@@ -62,6 +63,7 @@ files to ``.o`` files), you can use a regex pattern as the target:
    import re
    from chorelib import Main, command, rule, task
 
+   main = Main()
    APP = "hello.exe"
    CC = "gcc"
    CFLAGS = ["-c", "-I."]
@@ -83,7 +85,7 @@ files to ``.o`` files), you can use a regex pattern as the target:
        command("rm", "-f", OBJS, APP)
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 How it works:
 
@@ -189,6 +191,7 @@ This example stores timestamps in a SQLite database:
    import sqlite3
    from chorelib import Main, mtime, rule
 
+   main = Main()
    DB = "mydata.db"
 
    @mtime(re.compile(r"\w+"))
@@ -210,7 +213,7 @@ This example stores timestamps in a SQLite database:
        ...
 
    if __name__ == "__main__":
-       Main().run()
+       main.run()
 
 Key points:
 
@@ -297,8 +300,10 @@ You can subclass ``Main`` to add custom command-line arguments:
            parser.add_argument("--dbfile", default="data.db",
                                help="Database file path")
 
+   main = MyMain()
+
    if __name__ == "__main__":
-       MyMain().run()
+       main.run()
 
 The parsed arguments are available as ``self.args`` within the ``Main`` instance.
 Override ``add_arguments()`` to add your own arguments to the

@@ -3,6 +3,7 @@
 from pathlib import Path
 from chorelib import Main, task, shell, schedule
 
+main = Main()
 SRCDIRS = ["src", "tests"]
 SAMPLEDIRS = [d for d in Path("samples").glob("*") if d.is_dir()]
 
@@ -25,4 +26,4 @@ def test():
 
 
 if __name__ == '__main__':
-    Main().run()
+    main.run()
