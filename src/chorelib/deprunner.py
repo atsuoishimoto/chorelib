@@ -12,7 +12,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import get_ident, local
-from typing import Any
+from typing import Any, Sequence
 
 from .depgraph import BuildInfo, DepGraph
 from .errors import RuleNotFoundError, TargetNotFoundError
@@ -181,7 +181,7 @@ class Runner:
             self.build_tasks[target] = task
         return task
 
-    def _addtargets(self, targets: list[str]) -> list[str]:
+    def _addtargets(self, targets: Sequence[str]) -> list[str]:
         """Add targets to the build graph."""
         added: list[str] = []
         for target in targets:
@@ -198,20 +198,23 @@ class Runner:
 
     async def wait_until_done(self) -> None:
         """Wait until all registered build tasks have completed."""
+        seen: set[str] = set()
         try:
             while True:
-                tasks = [task for task in self.build_tasks.values() if not task.done()]
+                tasks = {
+                    target: task for target, task in self.build_tasks.items() if target not in seen
+                }
                 if not tasks:
                     break
-                await asyncio.gather(*tasks)
+                seen.update(tasks.keys())
+                await asyncio.gather(*(tasks.values()))
         except Exception:
             self.running = False
-            tasks = [task for task in self.build_tasks.values()]
-            for task in tasks:
+            for task in self.build_tasks.values():
                 task.cancel()
             raise
 
-    async def run(self, targets: list[str]) -> None:
+    async def run(self, targets: Sequence[str]) -> None:
         """Run the build for the specified targets."""
         self.running = True
         _runner.running = self
@@ -231,7 +234,7 @@ class Runner:
 _runner = local()
 
 
-def schedule(targets: list[str]) -> None:
+def schedule(*targets: str) -> None:
     """Dynamically add new targets to the running build from within a builder.
 
     This function can be called from a builder function to request that
@@ -251,7 +254,7 @@ def schedule(targets: list[str]) -> None:
     if runner.threadid != get_ident():
         # Called from a worker thread — schedule via the event loop
         async def _schedule_targets() -> None:
-            runner._addtargets(targets)  # noqa: F841
+            runner._addtargets(targets)
 
         fut = asyncio.run_coroutine_threadsafe(_schedule_targets(), runner.loop)
         fut.result()
@@ -262,7 +265,7 @@ def schedule(targets: list[str]) -> None:
 
 async def run(
     rules: RuleSet,
-    targets: list[str],
+    targets: Sequence[str],
     num_workers: int | None = 0,
     rebuild: bool = False,
 ) -> None:

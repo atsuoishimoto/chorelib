@@ -234,7 +234,7 @@ running build:
    @task
    def discover():
        targets = find_targets()
-       schedule(targets)
+       schedule(*targets)
 
 ``schedule()`` is thread-safe — it works correctly from both the event loop
 thread and worker threads. Internally, when called from a worker thread, it

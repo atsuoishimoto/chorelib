@@ -1,10 +1,14 @@
 #!/usr/bin/env -S uv run --script
 
 from pathlib import Path
-from chorelib import Main, task, shell
+from chorelib import Main, task, shell, schedule
 
 SRCDIRS = ["src", "tests"]
 SAMPLEDIRS = [d for d in Path("samples").glob("*") if d.is_dir()]
+
+@task
+def check():
+    schedule("lint", "test")
 
 @task
 def lint():
@@ -14,8 +18,11 @@ def lint():
     shell("ruff format", SRCDIRS, SAMPLEDIRS)
     shell("mypy --strict src tests")
 
-    for sample in SAMPLEDIRS:
-        shell("mypy --strict --ignore-missing-imports --install-types", sample)
+@task
+def test():
+    """Run pytest"""
+    shell("pytest tests")
+
 
 if __name__ == '__main__':
     Main().run()

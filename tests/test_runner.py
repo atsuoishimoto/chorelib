@@ -184,7 +184,7 @@ def test_add_build_targets(tmp_path: Path) -> None:
 
     @rules.task
     def task1() -> None:
-        schedule(["task2"])
+        schedule("task2")
 
     @rules.task
     def task2() -> None:
@@ -201,7 +201,7 @@ def test_add_build_targets_thread(tmp_path: Path) -> None:
 
     @rules.task
     def task1() -> None:
-        schedule(["task2"])
+        schedule("task2")
 
     @rules.task
     def task2() -> None:

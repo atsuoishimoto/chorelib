@@ -265,7 +265,7 @@ build using ``schedule()``:
    def discover():
        """Discover and build all .txt files."""
        files = find_files_to_process()
-       schedule(files)
+       schedule(*files)
 
 ``schedule()`` is thread-safe and can be called from any builder, even when
 running with multiple workers.
