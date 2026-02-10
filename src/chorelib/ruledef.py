@@ -9,7 +9,7 @@ in dependencies.
 import logging
 import os
 import re
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, MutableSequence, Sequence
 from pathlib import Path, PurePath
 from re import Match, Pattern
 from typing import Any, TypeAlias, Union
@@ -23,13 +23,13 @@ TargetType: TypeAlias = Union[str, "Pattern[str]"]
 
 TargetParamType: TypeAlias = Union[Path, TargetType]
 TargetsParamType: TypeAlias = Union[
-    TargetParamType, "list[Union[TargetParamType, TargetsParamType]]"
+    TargetParamType, "Sequence[Union[TargetParamType, TargetsParamType]]"
 ]
 
 DepType: TypeAlias = Union[str, "Callable[..., Any]"]
 
 DepParamType: TypeAlias = Union[DepType, Path]
-DepsParamType: TypeAlias = Union[DepParamType, "list[Union[DepParamType, DepsParamType]]"]
+DepsParamType: TypeAlias = Union[DepParamType, "Sequence[Union[DepParamType, DepsParamType]]"]
 
 BuilderFunc: TypeAlias = Callable[..., Any]
 MTimeFunc: TypeAlias = Callable[[str], Any]
@@ -38,13 +38,13 @@ MTimeFunc: TypeAlias = Callable[[str], Any]
 class RuleBase:
     """Base class for Rule and Task definitions."""
 
-    depends: list[str | Callable[..., Any]]
-    needs: list[str | Callable[..., Any]]
+    depends: Sequence[str | Callable[..., Any]]
+    needs: Sequence[str | Callable[..., Any]]
     doc: str | None
     builder: BuilderFunc | None
     default: bool
     is_static: bool = False
-    targets: list[TargetType]
+    targets: Sequence[TargetType]
 
     def __init__(
         self,
@@ -104,7 +104,7 @@ class RuleBase:
         """Set the builder function for the rule."""
         self.builder = builder
 
-    def _get_deps(self, match: Match[str]) -> tuple[list[str], list[str]]:
+    def _get_deps(self, match: Match[str]) -> tuple[Sequence[str], Sequence[str]]:
         """Get the dependencies and needs for a matched target."""
 
         def expand_dep(match: Match[str], dep: str | Callable[..., Any]) -> Any:
@@ -118,11 +118,15 @@ class RuleBase:
             else:
                 raise TypeError(f"Invalid dependency: {dep}")
 
-        deps: list[str] = unique_list(flatten([expand_dep(match, dep) for dep in self.depends]))
-        needs: list[str] = unique_list(flatten([expand_dep(match, need) for need in self.needs]))
+        deps: Sequence[str] = unique_list(
+            flatten([expand_dep(match, dep) for dep in self.depends])
+        )
+        needs: Sequence[str] = unique_list(
+            flatten([expand_dep(match, need) for need in self.needs])
+        )
         return deps, needs
 
-    def match(self, target: str) -> tuple[list[str], list[str]] | None:
+    def match(self, target: str) -> tuple[Sequence[str], Sequence[str]] | None:
         """Match the target against the rule's targets and return dependencies."""
         for pattern in self.targets:
             if isinstance(pattern, Pattern):
@@ -135,7 +139,7 @@ class RuleBase:
                     return self._get_deps(m)
         return None
 
-    def run_builder(self, target: str, depends: list[str], needs: list[str]) -> Any:
+    def run_builder(self, target: str, depends: Sequence[str], needs: Sequence[str]) -> Any:
         """Run the builder function for the rule.
         Returns a timestamp of the target."""
         if not self.builder:
@@ -320,7 +324,7 @@ class Task(RuleBase):
             doc = self.builder.__doc__.strip()
         return title, doc
 
-    def run_builder(self, target: str, depends: list[str], needs: list[str]) -> int:
+    def run_builder(self, target: str, depends: Sequence[str], needs: Sequence[str]) -> int:
         """Execute the task's builder function.
 
         Returns -1 to indicate the target is always considered out-of-date.
@@ -347,7 +351,7 @@ class MTime:
     rows or remote objects.
     """
 
-    targets: list[TargetType]
+    targets: Sequence[TargetType]
 
     def __init__(
         self,
@@ -544,11 +548,11 @@ class RuleSet:
 
         return deco
 
-    def select_rule(self, target: str) -> tuple[RuleBase, list[str], list[str]] | None:
+    def select_rule(self, target: str) -> tuple[RuleBase, Sequence[str], Sequence[str]] | None:
         """Select a rule that matches the target."""
         has_builder: RuleBase | None = None
-        deps: list[str] = []
-        needs: list[str] = []
+        deps: Sequence[str] = []
+        needs: Sequence[str] = []
         for rule in self.rules:
             logger.debug(f"Checking rule {rule} for target '{target}'")
 
@@ -596,9 +600,9 @@ class RuleSet:
         logger.debug(f"Selected default target: {first}")
         return first
 
-    def get_target_names(self) -> list[TargetType | None]:
+    def get_target_names(self) -> Sequence[TargetType | None]:
         """Return a list of all static target names and task names."""
-        ret: list[TargetType | None] = []
+        ret: MutableSequence[TargetType | None] = []
         for rule in self.rules:
             if isinstance(rule, Task):
                 ret.append(rule.name)
@@ -628,14 +632,14 @@ class RuleSet:
             return self.default_get_file_mtime
         return mtime.mtime
 
-    def get_docs(self) -> list[tuple[str | None, str | None]]:
+    def get_docs(self) -> Sequence[tuple[str | None, str | None]]:
         """Return documentation for all named rules and tasks.
 
         Returns:
             A list of (title, doc) tuples for rules with non-empty titles.
         """
         default = self.select_default_target() or ""
-        ret: list[tuple[str | None, str | None]] = []
+        ret: MutableSequence[tuple[str | None, str | None]] = []
         for rule in self.rules:
             title, doc = rule.get_doc()
             if title:

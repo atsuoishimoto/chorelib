@@ -5,6 +5,7 @@ dependencies. Detects circular dependencies via depth-first search
 before any build execution begins.
 """
 
+from collections.abc import Sequence
 from typing import Any
 
 from .errors import RuleError
@@ -21,7 +22,9 @@ class BuildInfo:
         needs: List of order-only prerequisite target names.
     """
 
-    def __init__(self, target: str, rule: RuleBase, depends: list[str], needs: list[str]) -> None:
+    def __init__(
+        self, target: str, rule: RuleBase, depends: Sequence[str], needs: Sequence[str]
+    ) -> None:
         self.rule = rule
         self.target = target
         self.depends = depends

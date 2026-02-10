@@ -10,6 +10,7 @@ from chorelib import depgraph, errors, ruledef
 def f(target: str, depends: list[str], needs: list[str]) -> None:
     pass
 
+
 def test_ruledef() -> None:
     rule = ruledef.Rule(
         builder=None,
@@ -225,8 +226,10 @@ def test_depgraph_detectloop() -> None:
     with pytest.raises(errors.RuleError):
         g.detectloop()
 
+
 def mtime(target: str) -> None:
     pass
+
 
 def test_mtime() -> None:
     rules = ruledef.RuleSet()
