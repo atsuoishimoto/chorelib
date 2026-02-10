@@ -26,7 +26,7 @@ jobs:
         run: uv sync --dev
 
       - name: Run tests
-        run: uv run pytest -v
+        run: ./check.py
 
   lint:
     runs-on: ubuntu-latest
