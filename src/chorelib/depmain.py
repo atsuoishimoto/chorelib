@@ -36,7 +36,7 @@ class Main:
           target if none are specified on the command line.
     """
 
-    def __init__(self, rules: RuleSet | None = None, *, no_default=False) -> None:
+    def __init__(self, rules: RuleSet | None = None, *, no_default: bool = False) -> None:
         if rules is None:
             rules = chorelib._default_rules
         self.rules = rules

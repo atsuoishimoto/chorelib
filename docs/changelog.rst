@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.2.0
+------
+2026/02/23
+
+- Add no_default parameter to Main class to exit with an error when no
+  targets are specified instead of falling back to default targets.
+
 v0.1.1
 ------
 
