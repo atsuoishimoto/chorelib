@@ -28,12 +28,19 @@ class Main:
     Parses command-line arguments (targets, verbosity, workers, rebuild
     flags) and runs the async build process. Subclass this to add custom
     arguments via ``add_arguments``.
+
+    parameters:
+        - `rules`: The set of rules to use for the build. If not provided,
+           defaults to `chorelib._default_rules`.
+        - `no_default`: If True, the program will not assume a default
+          target if none are specified on the command line.
     """
 
-    def __init__(self, rules: RuleSet | None = None) -> None:
+    def __init__(self, rules: RuleSet | None = None, *, no_default=False) -> None:
         if rules is None:
             rules = chorelib._default_rules
         self.rules = rules
+        self.no_default = no_default
         self.args: argparse.Namespace
         self._load_args()
 
@@ -186,6 +193,10 @@ class Main:
 
         targets: list[str] = self.args.targets
         if not targets:
+            if self.no_default:
+                sys.exit("No targets specified and no default target defined.")
+                return
+
             targets = self.get_default_targets()
             message(f"No targets specified. Using default targets: {targets}", 2)
             if not targets:
