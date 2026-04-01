@@ -22,7 +22,7 @@ from .deprunner import schedule
 from .ruledef import RuleSet
 from .utils import command, message, shell
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 # Default RuleSet instance used by the module-level decorators.
 # Users can use `@chorelib.rule(...)` and `@chorelib.task` directly

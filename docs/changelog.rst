@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.2.1
+------
+2026/04/01
+
+Remove incorrect warning messages.
+
 v0.2.0
 ------
 2026/02/23
