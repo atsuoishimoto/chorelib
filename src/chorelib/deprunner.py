@@ -227,8 +227,6 @@ class Runner:
         for target in targets:
             if target in self.skipped_targets:
                 message(f"{target!r} is up to date.")
-            else:
-                message(f"Nothing to be done for {target!r}")
 
 
 # Thread-local storage for tracking the active Runner instance.
